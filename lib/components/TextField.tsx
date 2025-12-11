@@ -32,7 +32,7 @@ const TextFieldComponent = (
     defaultValue,
     mask,
     decimalPlaces,
-    decimalSeparator, 
+    decimalSeparator,
     onChangeText,
     ...props
   }: TextFieldProps,

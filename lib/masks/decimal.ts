@@ -1,18 +1,17 @@
 import Decimal from "decimal.js";
 
 export function decimalFormat(
-  value: string,
+  _value: string,
   decimalPlaces: number = 2,
   decimalSeparator: "," | "." = ","
 ) {
+  const value = String(_value);
   if (value === "") {
     return value;
   }
-  if (
-    (value.length === decimalPlaces + 1 && value[0] === "0") ||
-    Number.isNaN(Number(value))
-  ) {
-    return "0";
+
+  if (value[0] === "0" || Number.isNaN(Number(value))) {
+    return "";
   }
 
   let decimalValue = new Decimal(value);
