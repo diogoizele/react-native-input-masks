@@ -8,7 +8,7 @@ import { rawToDecimal } from "./lib/masks/decimal";
 
 export default function App() {
   const [text, setText] = useState("");
-  const [isDecimalFormat, setIsDecimalFormat] = useState(true);
+  const [isDecimalFormat, setIsDecimalFormat] = useState(false);
 
   const handleStaticFormat = (value: string) => {
     if (isDecimalFormat) {

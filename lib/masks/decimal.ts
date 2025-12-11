@@ -41,8 +41,9 @@ export function rawToDecimal(_value: string, decimalPlaces: number = 2) {
   const stringified = String(_value);
 
   const sanitized = stringified.replace(/[^0-9]/g, "");
+  const value = Number(sanitized) ?? 0;
 
-  let decimalValue = new Decimal(sanitized);
+  let decimalValue = new Decimal(value);
 
   decimalValue = decimalValue.dividedBy(new Decimal(10).pow(decimalPlaces));
 
