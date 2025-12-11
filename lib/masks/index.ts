@@ -1,4 +1,5 @@
 import { cpfFormat, cpfParse } from "./cpf";
+import { decimalFormat, decimalParse } from "./decimal";
 import { phoneFormat, phoneParse } from "./phone";
 
 export default {
@@ -9,5 +10,9 @@ export default {
   cpf: {
     format: cpfFormat,
     parse: cpfParse,
+  },
+  decimal: {
+    format: decimalFormat,
+    parse: decimalParse,
   },
 };

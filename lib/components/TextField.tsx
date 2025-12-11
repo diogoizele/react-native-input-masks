@@ -20,7 +20,9 @@ import masks from "../masks";
 export interface TextFieldProps extends TextInputProps {
   ref?: RefObject<TextInput>;
   label?: string;
-  mask?: "phone" | "cpf";
+  mask?: "phone" | "cpf" | "decimal";
+  decimalPlaces?: number;
+  decimalSeparator?: "," | ".";
 }
 
 const TextFieldComponent = (
@@ -29,6 +31,8 @@ const TextFieldComponent = (
     value = "",
     defaultValue,
     mask,
+    decimalPlaces,
+    decimalSeparator, 
     onChangeText,
     ...props
   }: TextFieldProps,
@@ -48,7 +52,7 @@ const TextFieldComponent = (
     if (mask) {
       const { parse } = masks[mask];
 
-      _value = parse(_value);
+      _value = String(parse(_value));
     }
 
     if (onChangeText) {
@@ -61,6 +65,11 @@ const TextFieldComponent = (
   const handleFormatValueView = (value: string) => {
     if (mask) {
       const { format } = masks[mask];
+
+      if (mask === "decimal") {
+        return format(value, decimalPlaces, decimalSeparator);
+      }
+
       return format(value);
     }
 
