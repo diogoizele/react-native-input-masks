@@ -20,9 +20,10 @@ import masks from "../masks";
 export interface TextFieldProps extends TextInputProps {
   ref?: RefObject<TextInput>;
   label?: string;
-  mask?: "phone" | "cpf" | "decimal";
+  mask?: "phone" | "cpf" | "decimal" | "big-decimal";
   decimalPlaces?: number;
   decimalSeparator?: "," | ".";
+  controlled?: boolean;
 }
 
 const TextFieldComponent = (
@@ -33,6 +34,7 @@ const TextFieldComponent = (
     mask,
     decimalPlaces,
     decimalSeparator,
+    controlled,
     onChangeText,
     ...props
   }: TextFieldProps,
@@ -41,6 +43,8 @@ const TextFieldComponent = (
   const [text, setText] = useState(value ?? defaultValue);
 
   const textFieldRef = useRef<TextInput>(null);
+
+  const displayedValue = controlled ? value ?? "" : text;
 
   useImperativeHandle(ref, () => textFieldRef.current as TextInput, [
     textFieldRef.current,
@@ -52,14 +56,20 @@ const TextFieldComponent = (
     if (mask) {
       const { parse } = masks[mask];
 
-      _value = String(parse(_value));
+      if (mask === "big-decimal") {
+        _value = String(parse(_value, decimalPlaces));
+      } else {
+        _value = String(parse(_value));
+      }
     }
 
     if (onChangeText) {
       onChangeText(_value);
     }
 
-    setText(_value);
+    if (!controlled) {
+      setText(_value);
+    }
   };
 
   const handleFormatValueView = (value: string) => {
@@ -68,6 +78,8 @@ const TextFieldComponent = (
 
       if (mask === "decimal") {
         return format(value, decimalPlaces, decimalSeparator);
+      } else if (mask === "big-decimal") {
+        return format(value, decimalPlaces);
       }
 
       return format(value);
@@ -83,8 +95,8 @@ const TextFieldComponent = (
         style={styles.textInput}
         {...props}
         ref={textFieldRef}
-        value={handleFormatValueView(text)}
-        onChangeText={handleInterceptChange}
+        value={handleFormatValueView(displayedValue)}
+        onChangeText={controlled ? onChangeText : handleInterceptChange}
       />
     </View>
   );
