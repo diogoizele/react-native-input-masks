@@ -1,12 +1,27 @@
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Switch, Text, View } from "react-native";
+import {
+  Button,
+  Keyboard,
+  Modal,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 
 import { useState } from "react";
 import { TextField } from "./lib/components/TextField";
 import Colors from "./lib/constants/Colors";
 import { rawToDecimal } from "./lib/masks/decimal";
+import { ExampleAccordion } from "./examples/base/ExampleAccordion";
+import { BigDecimalExample } from "./examples/BigDecimal";
 
 export default function App() {
+  const [modalVisible, setModalVisible] = useState(false);
   const [text, setText] = useState("");
   const [isDecimalFormat, setIsDecimalFormat] = useState(false);
 
@@ -47,12 +62,12 @@ export default function App() {
           onChangeText={setText}
         />
         <TextField
-          label="Decimal Mask"
+          label="Brazilian Decimal Mask"
           placeholder="0,00"
           value={text}
           mask="decimal"
           keyboardType="numeric"
-          decimalPlaces={8}
+          decimalPlaces={2}
           decimalSeparator=","
           onChangeText={setText}
         />
@@ -61,7 +76,24 @@ export default function App() {
           <Switch value={isDecimalFormat} onValueChange={setIsDecimalFormat} />
         </View>
         <Text>{handleStaticFormat(text)}</Text>
+        <Button title="See all" onPress={() => setModalVisible(true)} />
       </View>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        statusBarTranslucent
+        presentationStyle="overFullScreen"
+      >
+        <ScrollView>
+          <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+            <Text style={styles.title}>All Examples Here</Text>
+            <Button title="Close" onPress={() => setModalVisible(false)} />
+            <ExampleAccordion title="BigDecimal">
+              <BigDecimalExample decimalPlaces={7} />
+            </ExampleAccordion>
+          </Pressable>
+        </ScrollView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -69,12 +101,11 @@ export default function App() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.gray[100],
   },
   container: {
     flex: 1,
     margin: 24,
-    marginTop: 48,
+    marginTop: Platform.select({ android: 48, ios: 64 }),
     gap: 16,
   },
   title: {
